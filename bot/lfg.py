@@ -93,21 +93,29 @@ class LFG:
         self.description = description
         self.game = game
         self.dt = dt
-        self._task.cancel('lfg 업데이트로 인한 예약 취소 및 다시 예약하기.')
+        if self._task:
+            self._task.cancel('lfg 업데이트로 인한 예약 취소 및 다시 예약하기.')
         await self.schedule()
 
     async def alert_members(self):
+        """
+        Send dm to participants.
+        :return:
+        """
         for m in self.participants:
             await m.send(embed=self.alert_embed())
 
     async def schedule(self):
+        """
+        Schedule this lfg.
+        """
         kst_now = get_current_dt()
         td_left: timedelta = self.dt - kst_now
         sec_left: int = timedelta2sec(td_left)
         if sec_left < LFG_ALERT_PREV_SEC:
             return await self.alert_members()
         else:
-            self._task = async_schedule_task(sec_left, self.alert_members, None)
+            self._task = async_schedule_task(sec_left, self.alert_members)
 
     @classmethod
     async def deserialize(
@@ -166,7 +174,7 @@ class LFG:
             self.owner.id,
             ','.join(map(lambda m: str(m.id), self.participants)),
             ','.join(map(lambda m: str(m.id), self.alternatives)),
-            self.id
+            self.id # For WHERE id=? clause.
         )
 
     def view(self) -> 'LFGView':
@@ -215,7 +223,7 @@ class LFG:
             inline=False
         ).set_author(
             name=self.owner.display_name,
-            # icon_url=self.owner.display_avatar.url
+            # icon_url=self.owner.display_avatar.url    # NameError 'Asset' Not defined? It seems like pycord-side problem :(
         ).set_thumbnail(
             url=self.guild.icon.url
         )

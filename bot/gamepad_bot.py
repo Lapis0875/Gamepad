@@ -5,7 +5,8 @@ from attr import attrs, attrib
 from discord import Forbidden
 from discord.ext.commands import Bot
 from discord.utils import get, find
-from orjson import loads
+# from orjson import loads
+from json import loads
 
 from bot.constants import DEFAULT_BOT_CONFIG_PATH
 from typings.files import JSON

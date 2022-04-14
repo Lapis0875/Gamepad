@@ -1,8 +1,8 @@
 import copy
 
 from attr import attrs, attrib
-from orjson import dumps, loads, OPT_INDENT_2, OPT_UTC_Z, OPT_SORT_KEYS
-
+# from orjson import dumps, loads, OPT_INDENT_2, OPT_UTC_Z, OPT_SORT_KEYS
+from json import dumps, loads
 from typings.files import JSON
 
 
@@ -34,8 +34,10 @@ class JsonConfig:
                 setattr(self, key, value)
 
     def to_json(self) -> JSON:
-        return {key: value for key, value in self.__dict__.items() if not key.startswith('__') or key == 'path'}
+        return {key: value for key, value in self.__dict__.items() if not key.startswith('__') and key != 'path'}
 
     def save(self):
-        with open(self.path, mode='wb') as f:
-            f.write(dumps(self.to_json(), option=OPT_SORT_KEYS | OPT_INDENT_2 | OPT_UTC_Z))     # speed up json dump by using orjson
+        # with open(self.path, mode='wb') as f:
+            # f.write(dumps(self.to_json(), option=OPT_SORT_KEYS | OPT_INDENT_2 | OPT_UTC_Z))     # speed up json dump by using orjson
+        with open(self.path, mode='wt') as f:
+            f.write(dumps(self.to_json(), indent=2, ensure_ascii=False, sort_keys=True))

@@ -1,6 +1,6 @@
 import asyncio
 from functools import partial, wraps
-from typing import Final, Callable
+from typing import Callable
 
 from discord import Cog, slash_command, ApplicationContext, Embed, ui, ButtonStyle, Interaction
 

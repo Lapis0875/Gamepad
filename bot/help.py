@@ -97,6 +97,7 @@ class GamepadHelp(Cog, name='help'):
         )
         for name, value in HELP_TEXTS:
             embed.add_field(name=name, value=value, inline=False)
+        embed.add_field(name='봇 코드', value='https://github.com/Lapis0875/Gamepad', inline=False)
         await ctx.response.send_message(embed=embed)
 
 
